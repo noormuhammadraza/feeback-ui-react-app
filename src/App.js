@@ -1,35 +1,39 @@
 // root component named similar as the file name
 // all the other components are embeded within the App component
 // it returns JSX JavaScript xml
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom' // uses HTML5 history API to keep our UI insync with URL
 import Header from "./components/Header"
 import FeedbackList from "./components/FeedbackList"
-import FeedbackData from "./data/FeedbackData"
-import { useState } from "react"
 import FeedbackStats from "./components/FeedbackStats"
 import FeedbackForm from "./components/FeedbackForm"
+import AboutPage from './pages/AboutPage'
+import { FeedbackProvider } from './context/FeedbackContext'
+import AboutIconLink from './components/AboutIconLink'
 
 function App() {
-    const [feedback, setFeedback] = useState(FeedbackData)
-
-    const deleteFeedback = (id) => {
-        if(window.confirm('Are you sure you want to delete?')) {
-            setFeedback(feedback.filter((item) => item.id !== id))
-        }
-        
-    }
 
     return (
-        <>
-            <Header />
-            <div className="container">
-                <FeedbackForm />
-                <FeedbackStats feedback={feedback}/>
-                <FeedbackList
-                    feedback={feedback}
-                    handleDelete={deleteFeedback}
-                />
-            </div>
-        </>
+        <FeedbackProvider>
+            <Router>
+                <Header />
+                <div className="container">
+                    <Routes> 
+                        <Route exact path='/' element={
+                            <>
+                                <FeedbackForm />
+                                <FeedbackStats />
+                                <FeedbackList />
+                            </>
+                        }>   
+                        </Route>
+                    
+                        <Route path='/about' element={ <AboutPage />}/>
+                    </Routes>
+                    
+                    <AboutIconLink />
+                </div>
+            </Router>
+        </FeedbackProvider>
     )
 }
 
